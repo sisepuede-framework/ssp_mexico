@@ -1,4 +1,0 @@
-country_name: "mexico"
-ssp_input_file_name: "real_data_20250210.csv"
-ssp_transformation_cw: "ssp_mexico_transformation_2025_02_10.xlsx"
-energy_model_flag: true

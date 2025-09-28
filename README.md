@@ -1,43 +1,101 @@
 # SSP_Mexico
-This repository stores the notebook to run the SSP model on Mexico's mitigation scenarios.
 
-## Get Started
+This repository contains notebooks and supporting files used to run the
+**SISEPUEDE** model on Egypt's mitigation scenarios. All modeling resources
+reside in the `ssp_modeling` folder described below.
 
-Create a conda environment with Python 3.11 (you can use any name):
 
-```bash
-conda create -n sisepuede python=3.11
+## Instructions: Setting Up the SISEPUEDE Environment
+
+### 1. **Go to the `environment.yml` file**
+
+Obtain the provided `environment.yml` file for SISEPUEDE.
+
+### 2. **Set a Custom Environment Name**
+
+Open the `environment.yml` file in your preferred text editor (such as VS Code, Atom, nano, or even Notepad).
+At the very top, you'll see a line like:
+
+```yaml
+name: sisepuede
 ```
 
-Activate the environment:
+**Change `sisepuede` to your preferred environment name, usually related to the region you are working with** (e.g., `ssp-egypt`, `ssp-usa`, or whatever you'd like).
 
-```bash
-conda activate sisepuede
+For example:
+
+```yaml
+name: ssp-egypt
 ```
 
-Install the working version of the sisepuede package:
+### 3. **Create the Environment from the `.yml` File**
+
+In your terminal, navigate to the directory containing your `environment.yml` file, then run:
 
 ```bash
-pip install git+https://github.com/jcsyme/sisepuede.git@working_version
+conda env create -f environment.yml
 ```
 
-Install the cost benefits package:
+This will create a new Conda environment with the name you set in the file.
+
+### 4. **Activate the Environment**
+
+After installation, activate your new environment with:
 
 ```bash
-pip install git+https://github.com/milocortes/costs_benefits_ssp.git@main
+conda activate <your_env_name>
 ```
 
-Install additional libraries:
+*(Replace `<your_env_name>` with the name you specified in the `.yml` file, e.g., `ssp-egypt`)*
 
-```bash
-pip install -r requirements.txt
-```
 
-## What's in the notebook
-- Automatic completion of missing inputs in Mexico's data using the Costa Rica example.
-- Handling of the Scenarios Excel for WEM, WAM, and NZ.
-- Creation of new transformations.
-- Creation and update of new strategies.
+### 5. **Done!**
 
-## What's missing
-- Some transformation YAMLs need to be updated manually. Please check the logs of the transformation creation cell to know which ones.
+Your environment is now ready to use, with all dependencies (including those installed via pip) preconfigured.
+
+
+#### **Tips:**
+
+* If you update the `environment.yml` file later, you can update your environment with:
+
+  ```bash
+  conda env update -f environment.yml --prune
+  ```
+* You can list all your environments with:
+
+  ```bash
+  conda env list
+  ```
+## Project Structure
+
+The most relevant files are inside the `ssp_modeling` directory:
+
+- `config_files/` – YAML configuration files used by the notebooks.
+- `input_data/` – Raw CSVs for each scenario.
+- `notebooks/` – Jupyter notebooks that manage the modeling runs.
+- `ssp_run/` – Output folders created after executing a scenario.
+- `scenario_mapping/` – Spreadsheets with the mapping between SSP transformations and region-specific measures. This is where the scenarios and transformation intensities are defined.
+- `transformations/` – CSVs and YAML files describing the transformations applied by the model.
+- `output_postprocessing/` – R scripts used to rescale model results and
+    generate processed outputs.
+
+## Steps to run the model and load data to Tableau for analysis
+
+All files and folders referenced here are inside the `ssp_modeling` directory.
+
+1. **Run the model in the notebook**
+
+   * Edit or create a configuration file in `config_files/`.
+   * Set up the transformations spreadsheet for custom Strategies and save it in `scenario_mapping/`.
+   * Open the manager notebook inside `notebooks/` and run the cells to execute the model.
+
+2. **Post-process results**
+    * If you require emission targets, generate the targets file by following the instructions in the [ssp_emission_targets repository](https://github.com/sisepuede-framework/ssp_emission_targets).
+    * Run the `postprocessing_250820.r` script, editing it to point to the correct data.
+    * The script will generate three files; two of them are used in Tableau.
+
+3. **Load data into Tableau**
+
+   * In the `tableau` directory, locate the Tableau dashboard file and the `data` folder.
+   * Copy the postprocessing output files into the `data` folder.
+   * Load the files beginning with `decomposed_emissions_` and `drivers_` into Tableau.
