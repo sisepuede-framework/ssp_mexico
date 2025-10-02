@@ -23,3 +23,5 @@ ssp_table <- merge(ssp_table,scodes[,c("transformation_code","transformation_nam
 dim(ssp_table)
 
 write.csv(ssp_table,"ssp_modeling/tableau/data/tableau_levers_table_complete.csv")
+
+print("Levers table created")

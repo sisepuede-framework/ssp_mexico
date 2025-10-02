@@ -290,11 +290,12 @@ print(res$plot)
 
 
 
-
-
 table(data_new$CSC.Subsector)
 table(data_new$strategy)
 
+res$data <- subset(res$data,CSC.Subsector!='UNACCOUNTED')
+
+table(res$data$CSC.Subsector)
 
 #write file#wristrategyte file
 dir.tableau <- paste0("ssp_modeling/tableau/data/")

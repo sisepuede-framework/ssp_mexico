@@ -12,8 +12,8 @@ rm(list=ls())
 
 #ouputfile
 
-dir.output  <- "ssp_modeling/ssp_run_output/sisepuede_results_sisepuede_run_2025-09-27T17;06;37.750953/"
-output.file <- "sisepuede_results_sisepuede_run_2025-09-27T17;06;37.750953_WIDE_INPUTS_OUTPUTS.csv"
+dir.output  <- "ssp_modeling/ssp_run_output/sisepuede_results_sisepuede_run_2025-09-30T11;28;10.980165/"
+output.file <- "sisepuede_results_sisepuede_run_2025-09-30T11;28;10.980165_WIDE_INPUTS_OUTPUTS.csv"
 
 region <- "mexico" 
 iso_code3 <- "MEX"
@@ -26,3 +26,8 @@ source('ssp_modeling/output_postprocessing/scr/data_prep_new_mapping.r')
 
 source('ssp_modeling/output_postprocessing/scr/data_prep_drivers.r')
 
+# Levers table
+source('ssp_modeling/output_postprocessing/scr/levers_table/#create levers table.r')
+
+# Jobs table
+source('ssp_modeling/output_postprocessing/scr/levers_table/#create jobs table.r')
