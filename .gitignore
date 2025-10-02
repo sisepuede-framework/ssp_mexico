@@ -184,3 +184,4 @@ ssp_modeling/tableau/data/
 
 #ignore R project files
 *.Rproj
+.Rproj.user

@@ -222,6 +222,29 @@ hp_filter_subsec <- function(data,
 }
 
 
+table(data_new$CSC.Subsector)
+
+# drop out
+# data_new$value[data_new$CSC.Subsector=='EN - Fugitive Emissions' & data_new$Year==2046 & data_new$Gas=='CH4' & data_new$strategy_id==6004] <-data_new$value[data_new$CSC.Subsector=='EN - Fugitive Emissions' & data_new$Year==2045 & data_new$Gas=='CH4' & data_new$strategy_id==6004]
+# data_new$value[data_new$CSC.Subsector=='EN - Fugitive Emissions' & data_new$Year==2046 & data_new$Gas=='CO2' & data_new$strategy_id==6004] <-data_new$value[data_new$CSC.Subsector=='EN - Fugitive Emissions' & data_new$Year==2045 & data_new$Gas=='CO2' & data_new$strategy_id==6004]
+
+
+ cond <- with(data_new,
+              CSC.Subsector == "EN - Fugitive Emissions" &
+                Gas == "CO2" &
+                strategy_id == 6003 &
+                Year>2022
+ )
+
+ rows <- which(cond %in% TRUE & !is.na(data_new$value))  # evita NAs en el índice
+data_new$value[rows] <- data_new$value[rows] * 0.8
+
+
+
+################################################################################
+# HP
+################################################################################
+
 # AG - Crops
 
 res <- hp_filter_subsec(
@@ -231,166 +254,48 @@ res <- hp_filter_subsec(
   lambda_hp = 1600
 )
 
-# plot
 print(res$plot)
-
-
-
-# AG - Livestock
 
 res <- hp_filter_subsec(
   data = res$data,
-  subsec_target = "AG - Livestock",
+  subsec_target = "AG - Crops",
   gas_target = "CH4",
   lambda_hp = 1600
 )
 
+print(res$plot)
+
 res <- hp_filter_subsec(
   data = res$data,
-  subsec_target = "AG - Livestock",
-  gas_target = c('HFC','N2O','PFC','SF6'),
+  subsec_target = "AG - Crops",
+  gas_target = "N2O",
   lambda_hp = 1600
 )
-
 
 # plot
 print(res$plot)
 
 
-#  EN - Building 
-
+# EN - Electricity/Heat
 
 res <- hp_filter_subsec(
   data = res$data,
   subsec_target = "EN - Building",
-  gas_target = "CH4",
-  lambda_hp = 1600
-)
-
-# plot
-print(res$plot)
-
-#  EN - Electricity/Heat
-
-
-res <- hp_filter_subsec(
-  data = res$data,
-  subsec_target = "EN - Electricity/Heat",
-  gas_target = "CH4",
-  lambda_hp = 1600
-)
-
-# plot
-print(res$plot)
-
-
-res <- hp_filter_subsec(
-  data = res$data,
-  subsec_target = "EN - Electricity/Heat",
   gas_target = "CO2",
   lambda_hp = 1600
 )
 
 # plot
 print(res$plot)
-
-
-res <- hp_filter_subsec(
-  data = res$data,
-  subsec_target = "EN - Electricity/Heat",
-  gas_target = c('HFC','N2O','PFC','SF6'),
-  lambda_hp = 1600
-)
-
-# plot
-print(res$plot)
-
-
-
-#   EN - Manufacturing/Construction
-
-
-res <- hp_filter_subsec(
-  data = res$data,
-  subsec_target = "EN - Manufacturing/Construction",
-  gas_target = "CH4",
-  lambda_hp = 1600
-)
-
-# plot
-print(res$plot)
-
-res <- hp_filter_subsec(
-  data = res$data,
-  subsec_target = "EN - Manufacturing/Construction",
-  gas_target = "CO2",
-  lambda_hp = 1600
-)
-
-# plot
-print(res$plot)
-
-
-#   LULUCF - Deforestation
-
-
-res <- hp_filter_subsec(
-  data = res$data,
-  subsec_target = "LULUCF - Deforestation",
-  gas_target = "CO2",
-  lambda_hp = 1600
-)
-
-# plot
-print(res$plot)
-
-# Waste - Solid Waste 
-
-res <- hp_filter_subsec(
-  data = res$data,
-  subsec_target = "Waste - Solid Waste",
-  gas_target = c('HFC','N2O','PFC','SF6'),
-  lambda_hp = 1600
-)
-
-# plot
-print(res$plot)
-
-
-# LULUCF - Other Lan
-
-res <- hp_filter_subsec(
-  data = res$data,
-  subsec_target = "LULUCF - Other Land",
-  gas_target = "CO2",
-  lambda_hp = 1600
-)
-
-# plot
-print(res$plot)
-
-
-
-# Waste - Wastewater Treatment
-
-res <- hp_filter_subsec(
-  data = res$data,
-  subsec_target = "Waste - Wastewater Treatment",
-  gas_target = "CH4",
-  lambda_hp = 1600
-)
-
-# plot
-print(res$plot)
-
-
-
 
 
 
 table(data_new$CSC.Subsector)
 table(data_new$strategy)
 
+res$data <- subset(res$data,CSC.Subsector!='UNACCOUNTED')
+
+table(res$data$CSC.Subsector)
 
 #write file#wristrategyte file
 dir.tableau <- paste0("ssp_modeling/tableau/data/")
