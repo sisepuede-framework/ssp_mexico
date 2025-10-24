@@ -1,5 +1,5 @@
 country_name: "mexico"
-ssp_input_file_name: "sisepuede_raw_inputs_latest_MEX.csv"
+ssp_input_file_name: "sisepuede_raw_inputs_MEX_251023.csv"
 ssp_transformation_cw: "ssp_mexico_transformation_cw.xlsx"
 set_lndu_reallocation_factor_to_zero: true
 energy_model_flag: true
