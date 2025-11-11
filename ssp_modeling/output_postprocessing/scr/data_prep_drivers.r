@@ -249,7 +249,7 @@ test2 <- rbind(test2, drivers_table, fill = TRUE)
 
 #write file
 dir.tableau <- paste0("ssp_modeling/tableau/data/")
-file.name <- paste0("drivers_",region,"_",output.file)
+file.name <- paste0("drivers_",region,".csv")
 
 write.csv(test2,paste0(dir.tableau,file.name), row.names=FALSE)
 

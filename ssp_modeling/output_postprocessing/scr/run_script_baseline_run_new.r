@@ -14,14 +14,9 @@ te_all[,"tvalue"] <- te_all[,target_country]
 te_all[,target_country] <- NULL
 target_vars <- unlist(strsplit(te_all$Vars,":"))
 
-# modification of AG - Livestock:N2O subsector matching
-# te_all$Vars[3] <- "emission_co2e_n2o_lsmm_direct_anaerobic_digester:emission_co2e_n2o_lsmm_direct_anaerobic_lagoon:emission_co2e_n2o_lsmm_direct_composting:emission_co2e_n2o_lsmm_direct_daily_spread:emission_co2e_n2o_lsmm_direct_deep_bedding:emission_co2e_n2o_lsmm_direct_dry_lot:emission_co2e_n2o_lsmm_direct_incineration:emission_co2e_n2o_lsmm_direct_liquid_slurry:emission_co2e_n2o_lsmm_direct_paddock_pasture_range:emission_co2e_n2o_lsmm_direct_poultry_manure:emission_co2e_n2o_lsmm_direct_storage_solid:emission_co2e_n2o_lsmm_indirect_anaerobic_digester:emission_co2e_n2o_lsmm_indirect_anaerobic_lagoon:emission_co2e_n2o_lsmm_indirect_composting:emission_co2e_n2o_lsmm_indirect_daily_spread:emission_co2e_n2o_lsmm_indirect_deep_bedding:emission_co2e_n2o_lsmm_indirect_dry_lot:emission_co2e_n2o_lsmm_indirect_incineration:emission_co2e_n2o_lsmm_indirect_liquid_slurry:emission_co2e_n2o_lsmm_indirect_paddock_pasture_range:emission_co2e_n2o_lsmm_indirect_poultry_manure:emission_co2e_n2o_lsmm_indirect_storage_solid"
-
 # data from SiSePuede
-data_all<-read.csv(paste0(dir.output,output.file))
+data_all<-fread(paste0(dir.output,output.file)) %>% as.data.frame()
 dim(data_all)
-
-data_all$emission_co2e_co2_frst_harvested_wood_products = 0
 
 rall <- unique(data_all$region)
 
@@ -72,4 +67,3 @@ z<-1
 rescale(z,rall,data_all,te_all,initial_conditions_id,dir.output,time_period_ref)
 
 print('Finish:run_script_baseline_run_new_asp process')
-
