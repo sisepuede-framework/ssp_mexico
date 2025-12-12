@@ -55,14 +55,14 @@ dim(data)
 
 #apply this differences to every combination of gas and sector
 #te_all$sector_gas <- paste(te_all$Subsector,te_all$Gas,sep="-")
-te_all$sector_gas <- paste(row.names(te_all),te_all$Subsector,te_all$Gas,sep="-")
+te_all$sector_gas <- paste(row.names(te_all),te_all$subsector_ssp,te_all$Gas,sep="-")
 sector_gas_all <- unique(te_all$sector_gas)
 
 for (w in 1:length(sector_gas_all))
 {
 #w<-64
 sector_gas_i <- sector_gas_all[w] #set target sector-gas
-tv1 <- unlist(strsplit(subset(te_all,sector_gas==sector_gas_i)$Vars,":")) #identify variables associayed with sector_gas
+tv1 <- unlist(strsplit(subset(te_all,sector_gas==sector_gas_i)$vars,":")) #identify variables associayed with sector_gas
 target_total <- subset(te_all,sector_gas==sector_gas_i)[,"tvalue"] #estimate target total
 uncalibrated_total <- sum(data [data$time_period==time_period_ref & data$Index==ref_inds,tv1] , na.rm=TRUE) #estimate uncalibrated total
 deviation_factor <- ifelse(uncalibrated_total==0,1.0,(target_total/uncalibrated_total)) #estimate deviation factor
@@ -90,11 +90,11 @@ round(sum(data [data$time_period==time_period_ref & data$Index==ref_inds,tv1] ),
 }
 
 #estimate sector totals 
-subsectors <- unique(te_all$Subsector)
+subsectors <- unique(te_all$subsector_ssp)
 
 for (a in 1:length(subsectors))
 {
-subsector_vars <- unlist(lapply(subset(te_all,Subsector==subsectors[a])$Vars,function(x){strsplit(x,":")}))
+subsector_vars <- unlist(lapply(subset(te_all,subsector_ssp==subsectors[a])$vars,function(x){strsplit(x,":")}))
 data[,paste0("emission_co2e_subsector_total_",subsectors[a])] <- rowSums(data[,subsector_vars])
 }
 #print file  
