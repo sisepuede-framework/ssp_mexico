@@ -31,16 +31,18 @@ table(cb_data$Year)
 table(cb_data$strategy)
 
 #change strategy names
-cb_data$strategy <- gsub("PFLO:NDC", "NDC", cb_data$strategy)
-cb_data$strategy <- gsub("PFLO:NDC2", "NDC + (energy)", cb_data$strategy)
-cb_data$strategy <- gsub("PFLO:NZ", "Low Emissions Pathway", cb_data$strategy)
+cb_data$strategy <- gsub("PFLO:NDC_3", "NDC 3.0 + Current PEMEX", cb_data$strategy)
+cb_data$strategy <- gsub("PFLO:NDC_3_HIG_CCSQ", "NDC 3.0 + PEMEX plan + High CCSQ", cb_data$strategy)
+cb_data$strategy <- gsub("PFLO:NDC_3_LOW_CCSQ", "NDC 3.0 + PEMEX plan + Low CCSQ", cb_data$strategy)
+cb_data$strategy <- gsub("PFLO:NDC_3_HIG_PRICE", "NDC 3.0 + High gas price", cb_data$strategy)
 
 table(cb_data$strategy_code)
 
 #create strategy id 
-cb_data$strategy_id <- ifelse(cb_data$strategy_code=="PFLO:NDC", 6003,
-							  ifelse(cb_data$strategy_code=="PFLO:NDC2", 6004,
-							  ifelse(cb_data$strategy_code=="PFLO:NZ", 6005, cb_data$strategy_code)))
+cb_data$strategy_id <- ifelse(cb_data$strategy_code=="PFLO:NDC_3", 6003,
+							  ifelse(cb_data$strategy_code=="PFLO:NDC_3_HIG_CCSQ", 6004,
+							  ifelse(cb_data$strategy_code=="PFLO:NDC_3_LOW_CCSQ", 6005, 
+							  ifelse(cb_data$strategy_code=="PFLO:NDC_3_HIG_PRICE", 6006, cb_data$strategy_code))))
 							  
 cb_data$ids <- paste(cb_data$variable,cb_data$strategy_id,sep=":")
 

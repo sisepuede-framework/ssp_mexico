@@ -3,7 +3,7 @@ file.name <- paste0("decomposed_ssp_output.csv")
 iso_code3 <- iso_code3
 Country <- region
 
-mapping <- read.csv("ssp_modeling/output_postprocessing/data/inventory/emission_targets_MEX_2023_ni.csv")
+mapping <- read.csv("ssp_modeling/output_postprocessing/data/inventory_2026/crosswalk_mexico_ssp.csv")
 
 # drop "id" directly
 mapping$id <- NULL
@@ -17,7 +17,7 @@ mapping[[iso_code3]] <- NULL
 # mapping$Vars[3] <- "emission_co2e_n2o_lsmm_direct_anaerobic_digester:emission_co2e_n2o_lsmm_direct_anaerobic_lagoon:emission_co2e_n2o_lsmm_direct_composting:emission_co2e_n2o_lsmm_direct_daily_spread:emission_co2e_n2o_lsmm_direct_deep_bedding:emission_co2e_n2o_lsmm_direct_dry_lot:emission_co2e_n2o_lsmm_direct_incineration:emission_co2e_n2o_lsmm_direct_liquid_slurry:emission_co2e_n2o_lsmm_direct_paddock_pasture_range:emission_co2e_n2o_lsmm_direct_poultry_manure:emission_co2e_n2o_lsmm_direct_storage_solid:emission_co2e_n2o_lsmm_indirect_anaerobic_digester:emission_co2e_n2o_lsmm_indirect_anaerobic_lagoon:emission_co2e_n2o_lsmm_indirect_composting:emission_co2e_n2o_lsmm_indirect_daily_spread:emission_co2e_n2o_lsmm_indirect_deep_bedding:emission_co2e_n2o_lsmm_indirect_dry_lot:emission_co2e_n2o_lsmm_indirect_incineration:emission_co2e_n2o_lsmm_indirect_liquid_slurry:emission_co2e_n2o_lsmm_indirect_paddock_pasture_range:emission_co2e_n2o_lsmm_indirect_poultry_manure:emission_co2e_n2o_lsmm_indirect_storage_solid"
 
 # add edgar
-edgar <- read.csv("ssp_modeling/output_postprocessing/data/inventory/INEGyCEI_historico_wide.csv")
+edgar <- read.csv("ssp_modeling/output_postprocessing/data/inventory_2026/INEGyCEI_historico_wide.csv")
 dim(edgar)
 edgar <- subset(edgar,Code==iso_code3)
 edgar$ID<- paste(edgar$mex_subsector,edgar$Gas,sep=":")
@@ -134,6 +134,7 @@ data_new <- subset(data_new,Year>=year_ref)
 #rbind both 
 data_new <- rbind(data_new,edgar)
 data_new <- data_new[order(data_new$strategy_id,
+                           data_new$mex_sector,
                            data_new$mex_subsector,
                            data_new$Gas,
                            data_new$Year),]
@@ -141,7 +142,7 @@ data_new <- data_new[order(data_new$strategy_id,
 dir.tableau <- paste0("ssp_modeling/tableau/data/")
 file.name <- paste0("decomposed_emissions_", region, "_", year_ref,'.csv')
 
-file.name <- paste0("raw_emissions_", region, "_", year_ref,'.csv')
+#file.name <- paste0("raw_emissions_", region, "_", year_ref,'.csv')
 write.csv(data_new,paste0(dir.tableau,file.name),row.names=FALSE)
 
 print('Finish:data_prep_new_mapping process')

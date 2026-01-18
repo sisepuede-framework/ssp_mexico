@@ -13,8 +13,8 @@ rm(list=ls())
 
 #ouputfile
 
-dir.output  <- "ssp_modeling/ssp_run_output/sisepuede_results_sisepuede_run_2025-12-09T18;04;20.425455/"
-output.file <- "sisepuede_results_sisepuede_run_2025-12-09T18;04;20.425455_WIDE_INPUTS_OUTPUTS.csv"
+dir.output  <- "ssp_modeling/ssp_run_output/sisepuede_results_sisepuede_run_2026-01-18T01;20;33.104408/"
+output.file <- "sisepuede_results_sisepuede_run_2026-01-18T01;20;33.104408_WIDE_INPUTS_OUTPUTS.csv"
 
 region <- "mexico" 
 iso_code3 <- "MEX"

@@ -2,7 +2,7 @@
 # This script runs the intertemporal decomposition for the baseline run
 ################################################################################
 
-te_all<-read.csv(paste0("ssp_modeling/output_postprocessing/data/inventory/emission_targets_MEX_2023_ni.csv"))
+te_all<-read.csv(paste0("ssp_modeling/output_postprocessing/data/inventory_2026/emission_targets_MEX_2023_ni.csv"))
 #te_all <- subset(te_all,Subsector%in%c( "lvst","lsmm","agrc","ippu","waso","trww","frst","lndu","soil"))
 
 # Print shape of te_all
