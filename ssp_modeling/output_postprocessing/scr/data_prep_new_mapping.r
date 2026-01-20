@@ -138,11 +138,168 @@ data_new <- data_new[order(data_new$strategy_id,
                            data_new$mex_subsector,
                            data_new$Gas,
                            data_new$Year),]
+
+
+
+
+# HP filter
+
+library(data.table)
+library(mFilter)
+library(ggplot2)
+
+hp_filter_subsec <- function(data,
+                             subsec_target,
+                             gas_target,
+                             lambda_hp = 100,
+                             time_col = "Year",
+                             value_col = "value",
+                             by_cols = c("primary_id", "strategy_id", "design_id", "future_id", "Code"),
+                             replace_original = TRUE,
+                             facet_scale = "free_y") {
+  library(data.table)
+  library(ggplot2)
+  library(mFilter)
+  
+  # Ensure data.table
+  dt <- copy(data)
+  setDT(dt)
+  
+  # Keep original for plotting
+  dt[, value_original := get(value_col)]
+  
+  # Apply HP filter only if strategy_id is not NA, anchored to first year
+  dt[`mex_subsector` == subsec_target & Gas %in% gas_target & !is.na(strategy_id),
+     value_hp := {
+       # order by time within group
+       o  <- order(get(time_col))
+       v  <- as.numeric(get(value_col))[o]
+       if (length(v) < 2L) {
+         # Not enough points to smooth; just return original in place
+         out <- rep(NA_real_, .N)
+         out[o][1] <- v[1]  # anchor first value
+         out
+       } else {
+         hp <- mFilter::hpfilter(v, freq = lambda_hp, type = "lambda")
+         sm <- pmax(hp$trend, 0)  # base smooth, non-negative
+         
+         # Anchor: shift entire smooth so it passes through the first observed value
+         shift   <- v[1] - sm[1]
+         sm_adj  <- sm + shift
+         
+         # (optional) keep non-negativity after shift, then enforce anchor again
+         sm_adj  <- pmax(sm_adj, 0)
+         sm_adj[1] <- v[1]  # ensure exact match at first point
+         
+         # put back in original row order
+         out <- rep(NA_real_, .N)
+         out[o] <- sm_adj
+         out
+       }
+     },
+     by = by_cols
+  ]
+  
+  # Plot data (incluye históricos con strategy_id NA para ver original completo)
+  plot_dt <- dt[`mex_subsector` == subsec_target & Gas %in% gas_target]
+  
+  p <- ggplot(plot_dt, aes(x = .data[[time_col]])) +
+    geom_line(aes(y = value_original, colour = "Original"), linewidth = 1) +
+    geom_line(aes(y = value_hp,      colour = "HP (anchored)"), linewidth = 1, na.rm = TRUE) +
+    scale_colour_manual(values = c("Original" = "steelblue", "HP (anchored)" = "red")) +
+    labs(
+      x = time_col,
+      y = value_col,
+      title = paste("(λ =", lambda_hp, ") -",
+                    subsec_target, "-", paste(gas_target, collapse = ", ")),
+      colour = "Series"
+    ) +
+    facet_wrap(~strategy_id, scales = facet_scale) +
+    theme_minimal()
+  
+  # Replace original values with anchored smooth ONLY where it exists
+  if (replace_original) {
+    dt[`mex_subsector` == subsec_target & Gas %in% gas_target &
+         !is.na(strategy_id) & !is.na(value_hp),
+       (value_col) := value_hp]
+  }
+  
+  list(data = dt, plot = p)
+}
+
+
+table(data_new$mex_subsector)
+
+
+
+################################################################################
+# HP
+################################################################################
+
+# [1A1b] Refinación del petróleo
+
+res <- hp_filter_subsec(
+  data = data_new,
+  subsec_target = "[1A1a] Actividad principal producción de electricidad y calor",
+  gas_target = "CO2",
+  lambda_hp = 1600
+
+)
+
+res <- hp_filter_subsec(
+  data = res$data,
+  subsec_target = "[1A1a] Actividad principal producción de electricidad y calor",
+  gas_target = "CH4",
+  lambda_hp = 1600
+  
+)
+
+res <- hp_filter_subsec(
+  data = res$data,
+  subsec_target = "[1A1a] Actividad principal producción de electricidad y calor",
+  gas_target = "N2O",
+  lambda_hp = 1600
+  
+)
+
+print(res$plot)
+
+
+res <- hp_filter_subsec(
+  data = res$data,
+  subsec_target = "[1A1b] Refinación del petróleo",
+  gas_target = "CO2",
+  lambda_hp = 800
+)
+
+print(res$plot)
+
+
+
+res <- hp_filter_subsec(
+  data = res$data,
+  subsec_target = "[1A3] Transporte",
+  gas_target = "CO2",
+  lambda_hp = 100
+)
+
+res <- hp_filter_subsec(
+  data = res$data,
+  subsec_target = "[1A3] Transporte",
+  gas_target = "N2O",
+  lambda_hp = 100
+)
+
+print(res$plot)
+
+
+
+
 #write file#wristrategyte file
 dir.tableau <- paste0("ssp_modeling/tableau/data/")
 file.name <- paste0("decomposed_emissions_", region, "_", year_ref,'.csv')
 
 #file.name <- paste0("raw_emissions_", region, "_", year_ref,'.csv')
-write.csv(data_new,paste0(dir.tableau,file.name),row.names=FALSE)
+write.csv(res$data, paste0(dir.tableau,file.name),row.names=FALSE)
 
 print('Finish:data_prep_new_mapping process')

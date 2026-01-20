@@ -14,7 +14,7 @@ rm(list=ls())
 
 #df <- fread('ssp_modeling/ssp_run_output/sisepuede_summary_results_run_sisepuede_run_2025-08-27T20;12;53.345956/WIDE_INPUTS_OUTPUTS.csv')
 
-out <- 'ssp_modeling/ssp_run_output/sisepuede_results_sisepuede_run_2026-01-19T17;37;26.166899'
+out <- dir.output
 
 df  <- fread(paste0(out,'/decomposed_ssp_output.csv'))
 att <- fread(paste0(out,'/ATTRIBUTE_PRIMARY.csv'))

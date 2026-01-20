@@ -8,5 +8,5 @@ parameters:
   magnitude: 3.2
   magnitude_type: scalar
   vec_implementation_ramp:
-    tp_0_ramp: 12
+    tp_0_ramp: 7
 transformer: "TFR:ENFU:ADJ_EXPORTS"
