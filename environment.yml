@@ -1,4 +1,4 @@
-name: ssp_mexico_nm
+name: ssp_mexico_j
 channels:
   - conda-forge
 dependencies:
