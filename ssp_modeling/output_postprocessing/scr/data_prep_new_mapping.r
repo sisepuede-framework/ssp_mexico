@@ -276,6 +276,17 @@ print(res$plot)
 
 
 
+
+res <- hp_filter_subsec(
+  data = res$data,
+  subsec_target = "[1A1c] Manufactura de combustibles sólidos y otras industrias de la energía",
+  gas_target = "CO2",
+  lambda_hp = 800
+)
+
+print(res$plot)
+
+
 res <- hp_filter_subsec(
   data = res$data,
   subsec_target = "[1A3] Transporte",

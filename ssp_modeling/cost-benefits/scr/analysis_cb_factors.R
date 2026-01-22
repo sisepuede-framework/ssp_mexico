@@ -8,7 +8,6 @@ library(RColorBrewer)
 library(ggplot2)
 library(scales)
 
-rm(list=ls())
 
 
 
@@ -17,6 +16,8 @@ rm(list=ls())
 out <- dir.output
 
 df  <- fread(paste0(out,'/decomposed_ssp_output.csv'))
+#df  <- fread(paste0(out, run, "_WIDE_INPUTS_OUTPUTS.csv"))
+
 att <- fread(paste0(out,'/ATTRIBUTE_PRIMARY.csv'))
 stt <- fread(paste0(out,'/ATTRIBUTE_STRATEGY.csv'))
 
@@ -25,12 +26,29 @@ df <- merge(df, att, by = "primary_id", all.x = TRUE)
 
 
  
-refinement <- grep("^emission_co2e_co2_entc_nbmass_processing_and_refinement_fp", colnames(df), value = TRUE)
+exports <- grep("^exports_enfu_pj_fuel", colnames(df), value = TRUE)
+
+
+prod_enfu <- grep("^prod_enfu_fuel_", colnames(df), value = TRUE)
+
+prod_enfu <- grep("^prod_enfu_fuel_", colnames(df), value = TRUE)
+
+processing_and_refinement <- grep("^emission_co2e_co2_entc_nbmass_processing_and_refinement_fp", colnames(df), value = TRUE)
+
+other_sectors <- c('emission_co2e_ch4_scoe_commercial_municipal','emission_co2e_ch4_scoe_residential','emission_co2e_ch4_inen_agriculture_and_livestock',
+                   'emission_co2e_co2_scoe_nbmass_commercial_municipal','emission_co2e_co2_scoe_nbmass_residential','emission_co2e_co2_inen_nbmass_agriculture_and_livestock',
+                   'emission_co2e_n2o_scoe_commercial_municipal','emission_co2e_n2o_scoe_residential','emission_co2e_n2o_inen_agriculture_and_livestock')
+
+waso_compost <- c('emission_co2e_n2o_waso_compost_food',
+                   'emission_co2e_n2o_waso_compost_sludge',
+                   'emission_co2e_n2o_waso_compost_yard')
+
+
 
 
 df_long <- melt(df, 
                 id.vars = c("primary_id", "strategy_id", "time_period"), 
-                measure.vars = refinement)
+                measure.vars = waso_compost)
 
 ggplot(df_long, aes(x = time_period, y = value, fill = variable)) +
   geom_area(position = "stack") +

@@ -51,13 +51,16 @@ table(cb_data$strategy)
 table(cb_data$strategy_id)
 table(cb_data$strategy_code)
 
+dim(cb_data)
 
 gdp <- fread(paste0(dir.output,output.file))
+gdp <- gdp[!duplicated(gdp$time_period), ]
 
 gdp <- subset(gdp,select=c("time_period","gdp_mmm_usd"))
 
 cb_data <- merge(cb_data,gdp,by="time_period",all.x=TRUE)
 
+dim(cb_data)
 
 dir.out <- "ssp_modeling/tableau/data/"
 write.csv(cb_data,paste0(dir.out,"cb_data.csv"),row.names=FALSE)

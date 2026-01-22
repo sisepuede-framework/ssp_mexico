@@ -7,7 +7,7 @@ import numpy as np
 
 # Define paths
 SSP_PATH = pathlib.Path(os.getcwd())
-SSP_RUN  = os.path.join(SSP_PATH, "ssp_modeling/ssp_run_output/sisepuede_results_sisepuede_run_2026-01-19T21;20;32.793074")
+SSP_RUN  = os.path.join(SSP_PATH, "ssp_modeling/ssp_run_output/sisepuede_results_sisepuede_run_2026-01-21T19;20;33.022925")
 
 
 CB_DEFAULT_DEFINITION_PATH = os.path.join(SSP_PATH,"ssp_modeling/cost-benefits/cb_config_files")
@@ -19,7 +19,7 @@ CB_OUTPUT = os.path.join(SSP_PATH,"ssp_modeling/cost-benefits/output")
 ssp_data = pd.read_csv(os.path.join(SSP_RUN, "decomposed_ssp_output.csv"))
 att_primary = pd.read_csv(os.path.join(SSP_RUN,"ATTRIBUTE_PRIMARY.csv"))
 att_strategy = pd.read_csv(os.path.join(SSP_RUN,"ATTRIBUTE_STRATEGY.csv"))
-strategy_code_base = "BASE"
+strategy_code_base = "PFLO:1"
 
 # Instantiate CostBenefits object
 cb = CostBenefits(ssp_data, att_primary, att_strategy, strategy_code_base)

@@ -5,14 +5,14 @@ description: " | Decrease soil organic carbon loss in croplands and leave crop r
   \ management factors :math:`F_{MG}` under different management regimes--mean of\
   \ *No-Till*)"
 identifiers:
-  transformation_code: "TX:AGRC:INC_CONSERVATION_AGRICULTURE_STRATEGY_4"
-  transformation_name: "Scaled Default Max Parameters by 1.0 - AGRC: Expand conservation\
-    \ agriculture"
+  transformation_code: TX:AGRC:INC_CONSERVATION_AGRICULTURE_STRATEGY_4
+  transformation_name: 'Scaled Default Max Parameters by 1.0 - AGRC: Expand conservation
+    agriculture'
 parameters:
   dict_categories_to_magnitude: null
-  magnitude_burned: 0.0
-  magnitude_removed: 0.5
+  magnitude_burned: 0.1
+  magnitude_removed: 0.8
   return_dict_magnitude: false
   vec_implementation_ramp:
-    tp_0_ramp: 12
-transformer: "TFR:AGRC:INC_CONSERVATION_AGRICULTURE"
+    tp_0_ramp: 10
+transformer: TFR:AGRC:INC_CONSERVATION_AGRICULTURE

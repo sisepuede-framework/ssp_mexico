@@ -192,3 +192,6 @@ ssp_modeling/tableau/data/
 # ignore R data and history files
 *.RData
 *.Rhistory
+
+# ignore tableau/data directory
+ssp_modeling/transformations_james_ver/
