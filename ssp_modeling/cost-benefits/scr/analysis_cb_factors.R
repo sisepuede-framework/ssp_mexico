@@ -15,8 +15,8 @@ library(scales)
 
 out <- dir.output
 
-df  <- fread(paste0(out,'/decomposed_ssp_output.csv'))
-#df  <- fread(paste0(out, run, "_WIDE_INPUTS_OUTPUTS.csv"))
+#df  <- fread(paste0(out,'/decomposed_ssp_output.csv'))
+df  <- fread(paste0(out, run, "_WIDE_INPUTS_OUTPUTS.csv"))
 
 att <- fread(paste0(out,'/ATTRIBUTE_PRIMARY.csv'))
 stt <- fread(paste0(out,'/ATTRIBUTE_STRATEGY.csv'))
@@ -43,12 +43,35 @@ waso_compost <- c('emission_co2e_n2o_waso_compost_food',
                    'emission_co2e_n2o_waso_compost_sludge',
                    'emission_co2e_n2o_waso_compost_yard')
 
+ch4_agrc <- c('emission_co2e_ch4_agrc_biomass_burning',
+                  'emission_co2e_ch4_agrc_anaerobicdom_rice')
+
+co2_agrc <- c(
+  "emission_co2e_co2_agrc_biomass_bevs_and_spices",
+  "emission_co2e_co2_agrc_biomass_fruits",
+  "emission_co2e_co2_agrc_biomass_nuts",
+  "emission_co2e_co2_agrc_biomass_other_woody_perennial",
+  "emission_co2e_co2_lndu_conversion_croplands_to_croplands",
+  "emission_co2e_co2_lndu_drained_organic_soils_croplands",
+  "emission_co2e_co2_lndu_drained_organic_soils_pastures",
+  "emission_co2e_co2_lndu_conversion_grasslands_to_grasslands",
+  "emission_co2e_co2_lndu_conversion_grasslands_to_pastures",
+  "emission_co2e_co2_lndu_conversion_pastures_to_grasslands",
+  "emission_co2e_co2_lndu_conversion_pastures_to_pastures",
+  "emission_co2e_co2_lndu_biomass_sequestration_grasslands",
+  "emission_co2e_co2_lndu_biomass_sequestration_pastures",
+  "emission_co2e_co2_soil_lime_use",
+  "emission_co2e_co2_soil_urea_use"
+)
+
+
+burning <- c('emission_co2e_n2o_agrc_biomass_burning','emission_co2e_ch4_agrc_biomass_burning')
 
 
 
 df_long <- melt(df, 
                 id.vars = c("primary_id", "strategy_id", "time_period"), 
-                measure.vars = waso_compost)
+                measure.vars = entc_discounted_operating_costs)
 
 ggplot(df_long, aes(x = time_period, y = value, fill = variable)) +
   geom_area(position = "stack") +

@@ -4,13 +4,12 @@ description: " | 95% of manure from cattle (dairy and non-dairy) and pigs is tre
   \ |    37.5% to Anaerobic Digestion\n |    12.5% to Composting\n |    25.0% to Daily\
   \ Spread\n |    12.5% to Deep Bedding\n |    12.5% to Solid Storage"
 identifiers:
-  transformation_code: "TX:LSMM:INC_MANAGEMENT_CATTLE_PIGS_STRATEGY_2"
-  transformation_name: "Scaled Default Max Parameters by 1.0 - LSMM: Improve manure\
-    \ management for cattle and pigs"
+  transformation_code: TX:LSMM:INC_MANAGEMENT_CATTLE_PIGS_STRATEGY_2
+  transformation_name: 'Scaled Default Max Parameters by 1.0 - LSMM: Improve manure
+    management for cattle and pigs'
 parameters:
-  dict_lsmm_pathways: null
-  return_pathways: false
-  vec_cats_lvst: null
-  vec_implementation_ramp:
-    tp_0_ramp: 7
-transformer: "TFR:LSMM:INC_MANAGEMENT_CATTLE_PIGS"
+  dict_lsmm_pathways:
+    anaerobic_digester: 0.3
+    composting: 0.35
+    daily_spread: 0.3
+transformer: TFR:LSMM:INC_MANAGEMENT_CATTLE_PIGS

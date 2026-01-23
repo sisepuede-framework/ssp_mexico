@@ -10,7 +10,7 @@ identifiers:
     agriculture'
 parameters:
   dict_categories_to_magnitude: null
-  magnitude_burned: 0.1
+  magnitude_burned: 0
   magnitude_removed: 0.8
   return_dict_magnitude: false
   vec_implementation_ramp:
