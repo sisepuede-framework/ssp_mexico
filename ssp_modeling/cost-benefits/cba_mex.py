@@ -7,7 +7,7 @@ import numpy as np
 
 # Define paths
 SSP_PATH = pathlib.Path(os.getcwd())
-SSP_RUN  = os.path.join(SSP_PATH, "ssp_modeling/ssp_run_output/sisepuede_results_sisepuede_run_2026-01-26T12;59;15.354017")
+SSP_RUN  = os.path.join(SSP_PATH, "ssp_modeling/ssp_run_output/sisepuede_results_sisepuede_run_2026-01-27T17;05;58.575946")
 
 
 CB_DEFAULT_DEFINITION_PATH = os.path.join(SSP_PATH,"ssp_modeling/cost-benefits/cb_config_files")

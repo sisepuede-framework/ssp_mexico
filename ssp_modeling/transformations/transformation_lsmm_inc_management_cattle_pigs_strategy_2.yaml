@@ -9,7 +9,7 @@ identifiers:
     management for cattle and pigs'
 parameters:
   dict_lsmm_pathways:
-    anaerobic_digester: 0.3
-    composting: 0.35
-    daily_spread: 0.3
+    anaerobic_digester: 0.5
+    composting: 0.05
+    daily_spread: 0.4
 transformer: TFR:LSMM:INC_MANAGEMENT_CATTLE_PIGS

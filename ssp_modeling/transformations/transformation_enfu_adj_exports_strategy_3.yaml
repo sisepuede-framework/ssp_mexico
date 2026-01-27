@@ -6,7 +6,7 @@ identifiers:
     exports of fuels'
 parameters:
   magnitude:
-    fuel_crude: 4
+    fuel_crude: 2.5
     fuel_natural_gas: 200
   magnitude_type: baseline_scalar
   vec_implementation_ramp:

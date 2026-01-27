@@ -305,6 +305,55 @@ print(res$plot)
 
 
 
+res <- hp_filter_subsec(
+  data = res$data,
+  subsec_target = "[1B] Emisiones fugitivas provenientes de la fabricación de combustibles",
+  gas_target = "CH4",
+  lambda_hp = 100
+)
+
+print(res$plot)
+
+
+res <- hp_filter_subsec(
+  data = res$data,
+  subsec_target = "[1B] Emisiones fugitivas provenientes de la fabricación de combustibles",
+  gas_target = "CO2",
+  lambda_hp = 800
+)
+
+print(res$plot)
+
+res <- hp_filter_subsec(
+  data = res$data,
+  subsec_target = "[1B] Emisiones fugitivas provenientes de la fabricación de combustibles",
+  gas_target = "N2O",
+  lambda_hp = 800
+)
+
+print(res$plot)
+
+
+res <- hp_filter_subsec(
+  data = res$data,
+  subsec_target = "[3A] Fermentación entérica",
+  gas_target = "CH4",
+  lambda_hp = 1200
+)
+
+print(res$plot)
+
+
+
+res <- hp_filter_subsec(
+  data = res$data,
+  subsec_target = "[3B] Gestión del estiércol",
+  gas_target = "CH4",
+  lambda_hp = 1200
+)
+
+print(res$plot)
+
 
 #write file#wristrategyte file
 dir.tableau <- paste0("ssp_modeling/tableau/data/")

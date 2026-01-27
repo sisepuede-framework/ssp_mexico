@@ -18,6 +18,9 @@ target_vars <- unlist(strsplit(te_all$vars,":"))
 data_all<-fread(paste0(dir.output,output.file)) %>% as.data.frame()
 dim(data_all)
 
+data_all$emission_co2e_nf3_ippu_production_chemicals <- 0.001
+data_all$emission_co2e_nf3_ippu_production_electronics <- 0.001
+
 rall <- unique(data_all$region)
 
 #set params of rescaling function

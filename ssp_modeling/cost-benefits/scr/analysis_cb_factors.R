@@ -15,8 +15,8 @@ library(scales)
 
 out <- dir.output
 
-#df  <- fread(paste0(out,'/decomposed_ssp_output.csv'))
-df  <- fread(paste0(out, run, "_WIDE_INPUTS_OUTPUTS.csv"))
+df  <- fread(paste0(out,'/decomposed_ssp_output.csv'))
+#df  <- fread(paste0(out, run, "_WIDE_INPUTS_OUTPUTS.csv"))
 
 att <- fread(paste0(out,'/ATTRIBUTE_PRIMARY.csv'))
 stt <- fread(paste0(out,'/ATTRIBUTE_STRATEGY.csv'))
@@ -68,10 +68,14 @@ co2_agrc <- c(
 burning <- c('emission_co2e_n2o_agrc_biomass_burning','emission_co2e_ch4_agrc_biomass_burning')
 
 
+nf3_ippu_production <- c('emission_co2e_nf3_ippu_production_chemicals','emission_co2e_nf3_ippu_production_electronics')
+
+
+
 
 df_long <- melt(df, 
                 id.vars = c("primary_id", "strategy_id", "time_period"), 
-                measure.vars = entc_discounted_operating_costs)
+                measure.vars = nf3_ippu_production)
 
 ggplot(df_long, aes(x = time_period, y = value, fill = variable)) +
   geom_area(position = "stack") +
