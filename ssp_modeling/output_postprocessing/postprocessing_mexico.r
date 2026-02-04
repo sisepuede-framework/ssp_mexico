@@ -13,7 +13,7 @@ rm(list=ls())
 
 #ouputfile
 
-run <- 'sisepuede_results_sisepuede_run_2026-01-27T17;05;58.575946'
+run <- 'sisepuede_results_sisepuede_run_2026-02-04T11;38;36.980177'
 
 dir.output  <- paste0("ssp_modeling/ssp_run_output/",run,"/")
 output.file <- paste0(run, "_WIDE_INPUTS_OUTPUTS.csv")

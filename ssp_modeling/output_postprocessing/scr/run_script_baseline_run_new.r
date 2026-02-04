@@ -21,6 +21,9 @@ dim(data_all)
 data_all$emission_co2e_nf3_ippu_production_chemicals <- 0.001
 data_all$emission_co2e_nf3_ippu_production_electronics <- 0.001
 
+data_all$nemomod_entc_discounted_operating_costs_pp_waste_incineration <- 0.001
+
+
 rall <- unique(data_all$region)
 
 #set params of rescaling function

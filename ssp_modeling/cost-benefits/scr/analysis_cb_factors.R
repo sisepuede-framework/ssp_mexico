@@ -72,10 +72,49 @@ nf3_ippu_production <- c('emission_co2e_nf3_ippu_production_chemicals','emission
 
 
 
+nemomod_entc_discounted_capital <-  grep("^nemomod_entc_discounted_capital", colnames(df), value = TRUE)
+
+
+
+
+
+df2 <- select(df, time_period, strategy_id,all_of(nemomod_entc_discounted_capital)) 
+
+fwrite(df2, 'ssp_modeling/cost-benefits/output/capital_cost.csv')
+
+
+
+nemomod_entc_discounted_capital <-  grep("^nemomod_entc_discounted_capital", colnames(df), value = TRUE)
+
+nemomod_entc_discounted_capital <-  grep("^nemomod_entc_discounted_capital", 
+                                         colnames(select(df, nemomod_entc_discounted_capital_investment_pp_gas_ccs,
+                                                         nemomod_entc_discounted_capital_investment_pp_gas)), 
+                                         value = TRUE)
+
+
+
+nemomod_entc_discounted_operating <-  grep("^nemomod_entc_discounted_operating", colnames(df), value = TRUE)
+
+nemomod_entc_discounted_operating <-  grep("^nemomod_entc_discounted_operating", 
+                                           colnames(select(df, -nemomod_entc_discounted_operating_costs_pp_waste_incineration)), 
+                                           value = TRUE)
+
+prod_enfu_fuel_electricity_pj <-  grep("^prod_enfu_fuel_electricity_pj", colnames(df), value = TRUE)
+
+
+
+gasrecovered_trww_biogas_tonne <-  grep("^vol_trww_ww_treated_advanced_aerobic_m3", colnames(df), value = TRUE)
+
+
+
+
+
+cost_enfu_fuel_ <-  grep("^cost_enfu_fuel_", colnames(df), value = TRUE)
+
 
 df_long <- melt(df, 
                 id.vars = c("primary_id", "strategy_id", "time_period"), 
-                measure.vars = nf3_ippu_production)
+                measure.vars = cost_enfu_fuel_biomass_usd)
 
 ggplot(df_long, aes(x = time_period, y = value, fill = variable)) +
   geom_area(position = "stack") +
@@ -88,6 +127,10 @@ ggplot(df_long, aes(x = time_period, y = value, fill = variable)) +
        y = "",
        fill = "Variable") +
   theme_dark()
+
+
+
+
 
 
 ggplot(subset(df_long, variable=='yield_agrc_other_annual_tonne'), aes(x = time_period, y = value, fill = variable)) +

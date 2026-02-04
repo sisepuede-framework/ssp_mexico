@@ -7,7 +7,7 @@ import numpy as np
 
 # Define paths
 SSP_PATH = pathlib.Path(os.getcwd())
-SSP_RUN  = os.path.join(SSP_PATH, "ssp_modeling/ssp_run_output/sisepuede_results_sisepuede_run_2026-01-27T17;05;58.575946")
+SSP_RUN  = os.path.join(SSP_PATH, "ssp_modeling/ssp_run_output/sisepuede_results_sisepuede_run_2026-02-04T11;38;36.980177")
 
 
 CB_DEFAULT_DEFINITION_PATH = os.path.join(SSP_PATH,"ssp_modeling/cost-benefits/cb_config_files")
@@ -47,7 +47,7 @@ results_all = pd.concat([results_system, results_tx], ignore_index = True)
 results_all_pp = cb.cb_process_interactions(results_all)
 
 # SHIFT any stray costs incurred from 2015 to 2025 to 2025 and 2035
-results_all_pp_shifted = cb.cb_shift_costs(results_all_pp)
+#results_all_pp_shifted = cb.cb_shift_costs(results_all_pp)
 
 # Save the results
-results_all_pp_shifted.to_csv(os.path.join(CB_OUTPUT, "cba_results.csv"), index = False)
+results_all_pp.to_csv(os.path.join(CB_OUTPUT, "cba_results.csv"), index = False)
