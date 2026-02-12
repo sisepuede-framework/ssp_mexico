@@ -15,7 +15,7 @@ parameters:
   - pp_solar
   - pp_wind
   dict_entc_renewable_target_msp:
-    pp_geothermal: 0.15
+    pp_hydropower: 0.15
     pp_nuclear: 0.05
     pp_solar: 0.49
     pp_wind: 0.3
