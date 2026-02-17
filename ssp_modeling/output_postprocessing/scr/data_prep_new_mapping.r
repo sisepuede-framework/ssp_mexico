@@ -246,6 +246,8 @@ res <- hp_filter_subsec(
 
 )
 
+print(res$plot)
+
 res <- hp_filter_subsec(
   data = res$data,
   subsec_target = "[1A1a] Actividad principal producción de electricidad y calor",
@@ -274,7 +276,14 @@ res <- hp_filter_subsec(
 
 print(res$plot)
 
+res <- hp_filter_subsec(
+  data = res$data,
+  subsec_target = "[1A3] Transporte",
+  gas_target = "CO2",
+  lambda_hp = 1600
+)
 
+print(res$plot)
 
 
 res <- hp_filter_subsec(
@@ -350,6 +359,27 @@ res <- hp_filter_subsec(
   subsec_target = "[3B] Gestión del estiércol",
   gas_target = "CH4",
   lambda_hp = 1200
+)
+
+print(res$plot)
+
+
+res <- hp_filter_subsec(
+  data = res$data,
+  subsec_target = "[2F] Uso de productos sustitutos de las sustancias que agotan la capa de ozono",
+  gas_target = "HFCS",
+  lambda_hp = 800
+)
+
+print(res$plot)
+
+
+
+res <- hp_filter_subsec(
+  data = res$data,
+  subsec_target = "[1A1c] Manufactura de combustibles sólidos y otras industrias de la energía",
+  gas_target = "CO2",
+  lambda_hp = 800
 )
 
 print(res$plot)

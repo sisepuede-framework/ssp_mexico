@@ -13,7 +13,7 @@ rm(list=ls())
 
 #ouputfile
 
-run <- 'sisepuede_results_sisepuede_run_2026-02-12T12;14;56.312003'
+run <- 'sisepuede_results_sisepuede_run_2026-02-17T11;28;02.563992'
 
 dir.output  <- paste0("ssp_modeling/ssp_run_output/",run,"/")
 output.file <- paste0(run, "_WIDE_INPUTS_OUTPUTS.csv")
@@ -28,10 +28,3 @@ source('ssp_modeling/output_postprocessing/scr/run_script_baseline_run_new.r')
 source('ssp_modeling/output_postprocessing/scr/data_prep_new_mapping.r')
 
 source('ssp_modeling/output_postprocessing/scr/data_prep_drivers.r')
-
-# Levers table
-source('ssp_modeling/output_postprocessing/scr/levers_table/#create levers table.r')
-
-# Jobs table
-source('ssp_modeling/output_postprocessing/scr/levers_table/#create jobs table.r')
-
