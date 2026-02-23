@@ -3,7 +3,7 @@ file.name <- paste0("decomposed_ssp_output.csv")
 iso_code3 <- iso_code3
 Country <- region
 
-mapping <- read.csv("ssp_modeling/output_postprocessing/data/inventory/emission_targets_MEX_2023_ni.csv")
+mapping <- read.csv("ssp_modeling/output_postprocessing/data/inventory_2026/crosswalk_mexico_ssp.csv")
 
 # drop "id" directly
 mapping$id <- NULL
@@ -17,7 +17,7 @@ mapping[[iso_code3]] <- NULL
 # mapping$Vars[3] <- "emission_co2e_n2o_lsmm_direct_anaerobic_digester:emission_co2e_n2o_lsmm_direct_anaerobic_lagoon:emission_co2e_n2o_lsmm_direct_composting:emission_co2e_n2o_lsmm_direct_daily_spread:emission_co2e_n2o_lsmm_direct_deep_bedding:emission_co2e_n2o_lsmm_direct_dry_lot:emission_co2e_n2o_lsmm_direct_incineration:emission_co2e_n2o_lsmm_direct_liquid_slurry:emission_co2e_n2o_lsmm_direct_paddock_pasture_range:emission_co2e_n2o_lsmm_direct_poultry_manure:emission_co2e_n2o_lsmm_direct_storage_solid:emission_co2e_n2o_lsmm_indirect_anaerobic_digester:emission_co2e_n2o_lsmm_indirect_anaerobic_lagoon:emission_co2e_n2o_lsmm_indirect_composting:emission_co2e_n2o_lsmm_indirect_daily_spread:emission_co2e_n2o_lsmm_indirect_deep_bedding:emission_co2e_n2o_lsmm_indirect_dry_lot:emission_co2e_n2o_lsmm_indirect_incineration:emission_co2e_n2o_lsmm_indirect_liquid_slurry:emission_co2e_n2o_lsmm_indirect_paddock_pasture_range:emission_co2e_n2o_lsmm_indirect_poultry_manure:emission_co2e_n2o_lsmm_indirect_storage_solid"
 
 # add edgar
-edgar <- read.csv("ssp_modeling/output_postprocessing/data/inventory/INEGyCEI_historico_wide.csv")
+edgar <- read.csv("ssp_modeling/output_postprocessing/data/inventory_2026/INEGyCEI_historico_wide.csv")
 dim(edgar)
 edgar <- subset(edgar,Code==iso_code3)
 edgar$ID<- paste(edgar$mex_subsector,edgar$Gas,sep=":")
@@ -134,14 +134,262 @@ data_new <- subset(data_new,Year>=year_ref)
 #rbind both 
 data_new <- rbind(data_new,edgar)
 data_new <- data_new[order(data_new$strategy_id,
+                           data_new$mex_sector,
                            data_new$mex_subsector,
                            data_new$Gas,
                            data_new$Year),]
+
+
+
+
+# HP filter
+
+library(data.table)
+library(mFilter)
+library(ggplot2)
+
+hp_filter_subsec <- function(data,
+                             subsec_target,
+                             gas_target,
+                             lambda_hp = 100,
+                             time_col = "Year",
+                             value_col = "value",
+                             by_cols = c("primary_id", "strategy_id", "design_id", "future_id", "Code"),
+                             replace_original = TRUE,
+                             facet_scale = "free_y") {
+  library(data.table)
+  library(ggplot2)
+  library(mFilter)
+  
+  # Ensure data.table
+  dt <- copy(data)
+  setDT(dt)
+  
+  # Keep original for plotting
+  dt[, value_original := get(value_col)]
+  
+  # Apply HP filter only if strategy_id is not NA, anchored to first year
+  dt[`mex_subsector` == subsec_target & Gas %in% gas_target & !is.na(strategy_id),
+     value_hp := {
+       # order by time within group
+       o  <- order(get(time_col))
+       v  <- as.numeric(get(value_col))[o]
+       if (length(v) < 2L) {
+         # Not enough points to smooth; just return original in place
+         out <- rep(NA_real_, .N)
+         out[o][1] <- v[1]  # anchor first value
+         out
+       } else {
+         hp <- mFilter::hpfilter(v, freq = lambda_hp, type = "lambda")
+         sm <- pmax(hp$trend, 0)  # base smooth, non-negative
+         
+         # Anchor: shift entire smooth so it passes through the first observed value
+         shift   <- v[1] - sm[1]
+         sm_adj  <- sm + shift
+         
+         # (optional) keep non-negativity after shift, then enforce anchor again
+         sm_adj  <- pmax(sm_adj, 0)
+         sm_adj[1] <- v[1]  # ensure exact match at first point
+         
+         # put back in original row order
+         out <- rep(NA_real_, .N)
+         out[o] <- sm_adj
+         out
+       }
+     },
+     by = by_cols
+  ]
+  
+  # Plot data (incluye históricos con strategy_id NA para ver original completo)
+  plot_dt <- dt[`mex_subsector` == subsec_target & Gas %in% gas_target]
+  
+  p <- ggplot(plot_dt, aes(x = .data[[time_col]])) +
+    geom_line(aes(y = value_original, colour = "Original"), linewidth = 1) +
+    geom_line(aes(y = value_hp,      colour = "HP (anchored)"), linewidth = 1, na.rm = TRUE) +
+    scale_colour_manual(values = c("Original" = "steelblue", "HP (anchored)" = "red")) +
+    labs(
+      x = time_col,
+      y = value_col,
+      title = paste("(λ =", lambda_hp, ") -",
+                    subsec_target, "-", paste(gas_target, collapse = ", ")),
+      colour = "Series"
+    ) +
+    facet_wrap(~strategy_id, scales = facet_scale) +
+    theme_minimal()
+  
+  # Replace original values with anchored smooth ONLY where it exists
+  if (replace_original) {
+    dt[`mex_subsector` == subsec_target & Gas %in% gas_target &
+         !is.na(strategy_id) & !is.na(value_hp),
+       (value_col) := value_hp]
+  }
+  
+  list(data = dt, plot = p)
+}
+
+
+table(data_new$mex_subsector)
+
+
+
+################################################################################
+# HP
+################################################################################
+
+# [1A1b] Refinación del petróleo
+
+res <- hp_filter_subsec(
+  data = data_new,
+  subsec_target = "[1A1a] Actividad principal producción de electricidad y calor",
+  gas_target = "CO2",
+  lambda_hp = 1600
+
+)
+
+print(res$plot)
+
+res <- hp_filter_subsec(
+  data = res$data,
+  subsec_target = "[1A1a] Actividad principal producción de electricidad y calor",
+  gas_target = "CH4",
+  lambda_hp = 1600
+  
+)
+
+res <- hp_filter_subsec(
+  data = res$data,
+  subsec_target = "[1A1a] Actividad principal producción de electricidad y calor",
+  gas_target = "N2O",
+  lambda_hp = 1600
+  
+)
+
+print(res$plot)
+
+
+res <- hp_filter_subsec(
+  data = res$data,
+  subsec_target = "[1A1b] Refinación del petróleo",
+  gas_target = "CO2",
+  lambda_hp = 800
+)
+
+print(res$plot)
+
+res <- hp_filter_subsec(
+  data = res$data,
+  subsec_target = "[1A3] Transporte",
+  gas_target = "CO2",
+  lambda_hp = 1600
+)
+
+print(res$plot)
+
+
+res <- hp_filter_subsec(
+  data = res$data,
+  subsec_target = "[1A1c] Manufactura de combustibles sólidos y otras industrias de la energía",
+  gas_target = "CO2",
+  lambda_hp = 800
+)
+
+print(res$plot)
+
+
+res <- hp_filter_subsec(
+  data = res$data,
+  subsec_target = "[1A3] Transporte",
+  gas_target = "CO2",
+  lambda_hp = 100
+)
+
+res <- hp_filter_subsec(
+  data = res$data,
+  subsec_target = "[1A3] Transporte",
+  gas_target = "N2O",
+  lambda_hp = 100
+)
+
+print(res$plot)
+
+
+
+res <- hp_filter_subsec(
+  data = res$data,
+  subsec_target = "[1B] Emisiones fugitivas provenientes de la fabricación de combustibles",
+  gas_target = "CH4",
+  lambda_hp = 100
+)
+
+print(res$plot)
+
+
+res <- hp_filter_subsec(
+  data = res$data,
+  subsec_target = "[1B] Emisiones fugitivas provenientes de la fabricación de combustibles",
+  gas_target = "CO2",
+  lambda_hp = 800
+)
+
+print(res$plot)
+
+res <- hp_filter_subsec(
+  data = res$data,
+  subsec_target = "[1B] Emisiones fugitivas provenientes de la fabricación de combustibles",
+  gas_target = "N2O",
+  lambda_hp = 800
+)
+
+print(res$plot)
+
+
+res <- hp_filter_subsec(
+  data = res$data,
+  subsec_target = "[3A] Fermentación entérica",
+  gas_target = "CH4",
+  lambda_hp = 1200
+)
+
+print(res$plot)
+
+
+
+res <- hp_filter_subsec(
+  data = res$data,
+  subsec_target = "[3B] Gestión del estiércol",
+  gas_target = "CH4",
+  lambda_hp = 1200
+)
+
+print(res$plot)
+
+
+res <- hp_filter_subsec(
+  data = res$data,
+  subsec_target = "[2F] Uso de productos sustitutos de las sustancias que agotan la capa de ozono",
+  gas_target = "HFCS",
+  lambda_hp = 800
+)
+
+print(res$plot)
+
+
+
+res <- hp_filter_subsec(
+  data = res$data,
+  subsec_target = "[1A1c] Manufactura de combustibles sólidos y otras industrias de la energía",
+  gas_target = "CO2",
+  lambda_hp = 800
+)
+
+print(res$plot)
+
+
 #write file#wristrategyte file
 dir.tableau <- paste0("ssp_modeling/tableau/data/")
 file.name <- paste0("decomposed_emissions_", region, "_", year_ref,'.csv')
 
-file.name <- paste0("raw_emissions_", region, "_", year_ref,'.csv')
-write.csv(data_new,paste0(dir.tableau,file.name),row.names=FALSE)
+#file.name <- paste0("raw_emissions_", region, "_", year_ref,'.csv')
+write.csv(res$data, paste0(dir.tableau,file.name),row.names=FALSE)
 
 print('Finish:data_prep_new_mapping process')

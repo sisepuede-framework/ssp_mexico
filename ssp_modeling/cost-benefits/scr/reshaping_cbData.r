@@ -31,16 +31,16 @@ table(cb_data$Year)
 table(cb_data$strategy)
 
 #change strategy names
-cb_data$strategy <- gsub("PFLO:NDC", "NDC", cb_data$strategy)
-cb_data$strategy <- gsub("PFLO:NDC2", "NDC + (energy)", cb_data$strategy)
-cb_data$strategy <- gsub("PFLO:NZ", "Low Emissions Pathway", cb_data$strategy)
+cb_data$strategy <- gsub("PFLO:3", "Pathway 2", cb_data$strategy)
+cb_data$strategy <- gsub("PFLO:5", "Pathway 3", cb_data$strategy)
+
 
 table(cb_data$strategy_code)
 
 #create strategy id 
-cb_data$strategy_id <- ifelse(cb_data$strategy_code=="PFLO:NDC", 6003,
-							  ifelse(cb_data$strategy_code=="PFLO:NDC2", 6004,
-							  ifelse(cb_data$strategy_code=="PFLO:NZ", 6005, cb_data$strategy_code)))
+cb_data$strategy_id <- ifelse(cb_data$strategy_code=="PFLO:3", 6004,
+							         ifelse(cb_data$strategy_code=="PFLO:5", 6005, 
+							         cb_data$strategy_code))
 							  
 cb_data$ids <- paste(cb_data$variable,cb_data$strategy_id,sep=":")
 
@@ -49,13 +49,16 @@ table(cb_data$strategy)
 table(cb_data$strategy_id)
 table(cb_data$strategy_code)
 
+dim(cb_data)
 
 gdp <- fread(paste0(dir.output,output.file))
+gdp <- gdp[!duplicated(gdp$time_period), ]
 
 gdp <- subset(gdp,select=c("time_period","gdp_mmm_usd"))
 
 cb_data <- merge(cb_data,gdp,by="time_period",all.x=TRUE)
 
+dim(cb_data)
 
 dir.out <- "ssp_modeling/tableau/data/"
 write.csv(cb_data,paste0(dir.out,"cb_data.csv"),row.names=FALSE)

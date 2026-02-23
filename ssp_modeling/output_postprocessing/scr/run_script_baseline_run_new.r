@@ -2,7 +2,7 @@
 # This script runs the intertemporal decomposition for the baseline run
 ################################################################################
 
-te_all<-read.csv(paste0("ssp_modeling/output_postprocessing/data/inventory/emission_targets_MEX_2023_ni.csv"))
+te_all<-read.csv(paste0("ssp_modeling/output_postprocessing/data/inventory_2026/emission_targets_MEX_2023_ni.csv"))
 #te_all <- subset(te_all,Subsector%in%c( "lvst","lsmm","agrc","ippu","waso","trww","frst","lndu","soil"))
 
 # Print shape of te_all
@@ -17,6 +17,12 @@ target_vars <- unlist(strsplit(te_all$vars,":"))
 # data from SiSePuede
 data_all<-fread(paste0(dir.output,output.file)) %>% as.data.frame()
 dim(data_all)
+
+data_all$emission_co2e_nf3_ippu_production_chemicals <- 0.001
+data_all$emission_co2e_nf3_ippu_production_electronics <- 0.001
+
+data_all$nemomod_entc_discounted_operating_costs_pp_waste_incineration <- 0.001
+
 
 rall <- unique(data_all$region)
 
