@@ -1,0 +1,14 @@
+citations: null
+description: Increase OR Decrease exports of fuels
+identifiers:
+  transformation_code: TX:ENFU:ADJ_EXPORTS_STRATEGY_4
+  transformation_name: 'Scaled Default Max Parameters by 1.0 - ENFU: Increase OR Decrease
+    exports of fuels'
+parameters:
+  magnitude:
+    fuel_crude: 2.5
+    fuel_natural_gas: 200
+  magnitude_type: baseline_scalar
+  vec_implementation_ramp:
+    tp_0_ramp: 7
+transformer: TFR:ENFU:ADJ_EXPORTS
