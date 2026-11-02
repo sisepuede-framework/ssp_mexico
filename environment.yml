@@ -1,4 +1,4 @@
-name: ssp_mexico_jan_21_01_26
+name: ssp_mex_env
 channels:
   - conda-forge
 dependencies:
@@ -6,9 +6,14 @@ dependencies:
   - matplotlib=3.9.2
   - xlsxwriter=3.1.1
   - ipykernel=6.29.5
+  - statsmodels=0.14.6
+  - setuptools>=60,<70
+  - ruamel.yaml
   - pip
+  - setuptools>=60,<70 # otherwise install it directly on the terminal /opt/anaconda3/envs/ssp_libya_env_2/bin/python -m pip install "setuptools>=60,<70"
   - pip:
-      - git+https://github.com/jcsyme/sisepuede.git
-      - ssp-transformations-handler==0.1.8
-      - costs-benefits-ssp
-      - polars
+      # SISEPUEDE — fork mantenido en sisepuede-framework (no se sincroniza con jcsyme/sisepuede).
+      - git+https://github.com/jcsyme/sisepuede/
+      - ssp-transformations-handler
+      # Costs & Benefits (fork con GFR cost + `gas_recovery_savings`).
+      - git+https://github.com/sisepuede-framework/costs_benefits_ssp.git
