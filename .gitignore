@@ -218,3 +218,6 @@ ssp_modeling/cost-benefits/output
 .Rproj.user
 *.Rhistory
 *.Rproj
+
+*ignore claude directory
+/.claude
